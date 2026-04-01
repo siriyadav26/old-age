@@ -16,6 +16,7 @@ import {
   ClipboardList,
   CheckCircle,
 } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 // Health assessment questions (unchanged)
 const healthQuestions = [
@@ -305,6 +306,7 @@ const healthQuestions = [
 ];
 
 function Dashboard() {
+  const { t } = useLanguage();
   const [stats, setStats] = useState(null);
   const [showAssessment, setShowAssessment] = useState(false);
   const [assessmentAnswers, setAssessmentAnswers] = useState({});
@@ -715,7 +717,7 @@ function Dashboard() {
   if (!stats)
     return (
       <p style={{ fontSize: "1.2rem", textAlign: "center", padding: "40px" }}>
-        Loading health data...
+        {t("Loading health data...")}
       </p>
     );
 
@@ -753,7 +755,7 @@ function Dashboard() {
         }}
       >
         <h2 className="card-title" style={{ paddingLeft: "8px", margin: 0 }}>
-          Today's Status
+          {t("Today's Status")}
         </h2>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -769,8 +771,8 @@ function Dashboard() {
         >
           <ClipboardList size={18} />
           {assessmentCompletedToday
-            ? "Update Assessment"
-            : "Daily Health Check"}
+            ? t("Update Assessment")
+            : t("Daily Health Check")}
         </motion.button>
       </div>
 
@@ -785,7 +787,7 @@ function Dashboard() {
             {stats.streak}
           </p>
           <p style={{ color: "var(--secondary)", fontWeight: 600 }}>
-            Days Safe
+            {t("Days Safe")}
           </p>
         </motion.div>
 
@@ -819,7 +821,7 @@ function Dashboard() {
             {stats.medicationAdherence}%
           </p>
           <p style={{ color: "var(--text-muted)", fontWeight: 600 }}>
-            Med Compliance
+            {t("Med. Adherence")}
           </p>
         </motion.div>
 
@@ -842,7 +844,7 @@ function Dashboard() {
               letterSpacing: "1px",
             }}
           >
-            Overall Health Score
+            {t("Health Score")}
           </p>
           <p
             className="stat-val"
@@ -881,7 +883,7 @@ function Dashboard() {
             color: "var(--text-main)",
           }}
         >
-          Mood Trend
+          {t("Daily Mood Trends")}
         </h3>
         <div style={{ height: "250px", width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -1079,7 +1081,7 @@ function Dashboard() {
                                 fontWeight: 500,
                               }}
                             >
-                              {q.icon} {q.label}
+                              {q.icon} {t(q.label)}
                             </label>
 
                             {q.type === "range" && (
@@ -1136,7 +1138,7 @@ function Dashboard() {
                               >
                                 {q.options.map((opt) => (
                                   <option key={opt} value={opt}>
-                                    {opt}
+                                    {t(opt)}
                                   </option>
                                 ))}
                               </select>
@@ -1161,7 +1163,7 @@ function Dashboard() {
                                       handleAnswerChange(q.id, true)
                                     }
                                   />{" "}
-                                  Yes
+                                  {t("Yes")}
                                 </label>
                                 <label
                                   style={{
@@ -1180,7 +1182,7 @@ function Dashboard() {
                                       handleAnswerChange(q.id, false)
                                     }
                                   />{" "}
-                                  No
+                                  {t("No")}
                                 </label>
                               </div>
                             )}
@@ -1255,7 +1257,7 @@ function Dashboard() {
                   className="btn btn-secondary"
                   onClick={() => setShowAssessment(false)}
                 >
-                  Cancel
+                  {t("Cancel")}
                 </button>
                 <button
                   className="btn btn-primary"
@@ -1263,7 +1265,7 @@ function Dashboard() {
                   disabled={submitting}
                   style={{ opacity: submitting ? 0.6 : 1, minWidth: "100px" }}
                 >
-                  {submitting ? "Submitting..." : "Submit Assessment"}
+                  {submitting ? t("Submitting...") : t("Submit Assessment")}
                 </button>
               </div>
             </motion.div>

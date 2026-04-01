@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Initialize Cohere
 const COHERE_API_KEY = process.env.COHERE_API_KEY || 'dummy_key_placeholder';
@@ -26,6 +26,16 @@ nodemailer.createTestAccount((err, account) => {
   });
   console.log('Nodemailer test service ready (Ethereal Email).');
 });
+
+// Utility for face recognition (Euclidean Distance of 128D vectors)
+const calculateFaceDistance = (desc1, desc2) => {
+  if (!desc1 || !desc2 || desc1.length !== desc2.length) return Infinity;
+  let sum = 0;
+  for (let i = 0; i < desc1.length; i++) {
+    sum += Math.pow(desc1[i] - desc2[i], 2);
+  }
+  return Math.sqrt(sum);
+};
 
 // --- Mock Database ---
 let db = {
@@ -70,12 +80,12 @@ const fireSOS = async (reason) => {
 
 // --- AUTH API ---
 app.post('/api/register', (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, faceDescriptor } = req.body;
   if (!name || !email || !password) return res.status(400).json({ error: 'Missing fields' });
   const existingUser = db.accounts.find(u => u.email === email);
   if (existingUser) return res.status(400).json({ error: 'User already exists' });
 
-  const newUser = { id: Date.now(), name, email, password };
+  const newUser = { id: Date.now(), name, email, password, faceDescriptor: faceDescriptor || null };
   db.accounts.push(newUser);
   res.json({ token: `mock-token-${newUser.id}`, user: { name, email } });
 });
@@ -85,6 +95,32 @@ app.post('/api/login', (req, res) => {
   const user = db.accounts.find(u => u.email === email && u.password === password);
   if (!user) return res.status(401).json({ error: 'Invalid credentials' });
   res.json({ token: `mock-token-${user.id}`, user: { name: user.name, email: user.email } });
+});
+
+app.post('/api/login-face', (req, res) => {
+  const { faceDescriptor } = req.body;
+  if (!faceDescriptor) return res.status(400).json({ error: 'No face data provided' });
+
+  const MATCH_THRESHOLD = 0.5; // Stricter threshold for better security 
+
+  let bestMatch = null;
+  let lowestDistance = Infinity;
+
+  for (const user of db.accounts) {
+    if (user.faceDescriptor) {
+      const distance = calculateFaceDistance(faceDescriptor, user.faceDescriptor);
+      if (distance < lowestDistance) {
+        lowestDistance = distance;
+        bestMatch = user;
+      }
+    }
+  }
+
+  if (bestMatch && lowestDistance < MATCH_THRESHOLD) {
+    return res.json({ token: `mock-token-${bestMatch.id}`, user: { name: bestMatch.name, email: bestMatch.email } });
+  } else {
+    return res.status(401).json({ error: 'Face not recognized' });
+  }
 });
 
 
