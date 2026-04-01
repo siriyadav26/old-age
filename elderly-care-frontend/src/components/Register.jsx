@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { User, Lock, Mail, HeartPulse } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 function Register({ setToken }) {
+  const { t } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +22,7 @@ function Register({ setToken }) {
         body: JSON.stringify({ name, email, password })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Registration failed');
+      if (!res.ok) throw new Error(data.error || t('Registration failed'));
       
       localStorage.setItem('auth_token', data.token);
       setToken(data.token);
@@ -41,33 +43,33 @@ function Register({ setToken }) {
     }}>
       <div className="card" style={{ maxWidth: '500px', width: '100%', padding: '50px 32px', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
         <HeartPulse size={80} color="#000000" style={{ margin: '0 auto 24px auto' }} />
-        <h2 style={{ fontSize: '2.5rem', color: 'var(--primary)', marginBottom: '8px' }}>Create Account</h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '40px' }}>Join CareAssistant for free</p>
+        <h2 style={{ fontSize: '2.5rem', color: 'var(--primary)', marginBottom: '8px' }}>{t("Create an Account")}</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '40px' }}>{t("Join CareAssistant for free")}</p>
 
         {error && <div className="alert-card danger" style={{ justifyContent: 'center' }}>{error}</div>}
 
         <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div style={{ position: 'relative' }}>
              <User size={28} color="var(--primary)" style={{ position: 'absolute', top: '16px', left: '20px' }} />
-             <input className="form-control" type="text" required placeholder="Full Name" 
+             <input className="form-control" type="text" required placeholder={t("Full Name")} 
                 value={name} onChange={e => setName(e.target.value)} style={{ paddingLeft: '64px' }} />
           </div>
           <div style={{ position: 'relative' }}>
              <Mail size={28} color="var(--primary)" style={{ position: 'absolute', top: '16px', left: '20px' }} />
-             <input className="form-control" type="email" required placeholder="Email Address" 
+             <input className="form-control" type="email" required placeholder={t("Email")} 
                 value={email} onChange={e => setEmail(e.target.value)} style={{ paddingLeft: '64px' }} />
           </div>
           <div style={{ position: 'relative' }}>
              <Lock size={28} color="var(--primary)" style={{ position: 'absolute', top: '16px', left: '20px' }} />
-             <input className="form-control" type="password" required placeholder="Password" 
+             <input className="form-control" type="password" required placeholder={t("Password")} 
                 value={password} onChange={e => setPassword(e.target.value)} style={{ paddingLeft: '64px' }} />
           </div>
 
-          <button type="submit" className="btn btn-success" style={{ marginTop: '16px' }}>Register</button>
+          <button type="submit" className="btn btn-success" style={{ marginTop: '16px' }}>{t("Register")}</button>
         </form>
 
         <p style={{ marginTop: '32px', fontSize: '1.1rem' }}>
-          Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Log In</Link>
+          {t("Already have an account? ")} <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{t("Login here")}</Link>
         </p>
       </div>
     </div>

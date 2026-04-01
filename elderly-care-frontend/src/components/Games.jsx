@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { BrainCircuit, RotateCcw, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 
 function Games() {
   const [activeGame, setActiveGame] = useState(null); // 'memory' or 'sequence'
+  const { t } = useLanguage();
 
   return (
     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="card" style={{ minHeight: '600px', display: 'flex', flexDirection: 'column' }}>
-      <h2 className="card-title"><BrainCircuit size={36} /> Mind Care Hub</h2>
+      <h2 className="card-title"><BrainCircuit size={36} /> {t('Mind Care Hub')}</h2>
       
       {!activeGame ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setActiveGame('memory')} className="btn" style={{ minHeight: '56px', fontSize: '1.1rem', maxWidth: '350px', width: '100%' }}>
-              Play Memory Match
+              {t('Play Memory Match')}
            </motion.button>
            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setActiveGame('sequence')} className="btn" style={{ minHeight: '56px', fontSize: '1.1rem', maxWidth: '350px', width: '100%', background: 'linear-gradient(135deg, var(--secondary), var(--primary))', color: 'white' }}>
-              Play Number Recall
+              {t('Play Number Recall')}
            </motion.button>
         </div>
       ) : (
         <div style={{ flex: 1 }}>
            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="btn" style={{ width: 'auto', marginBottom: '24px', background: 'var(--text-muted)' }} onClick={() => setActiveGame(null)}>
-              ← Back to Hub
+              {t('← Back to Hub')}
            </motion.button>
            {activeGame === 'memory' ? <MemoryGame /> : <SequenceGame />}
         </div>
@@ -31,6 +33,7 @@ function Games() {
 }
 
 function MemoryGame() {
+  const { t } = useLanguage();
   const emojis = ['🌞', '🌺', '🐶', '🍎', '🦋', '🎈', '🌞', '🌺', '🐶', '🍎', '🦋', '🎈'];
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
@@ -68,7 +71,7 @@ function MemoryGame() {
 
   return (
     <div style={{ textAlign: 'center' }}>
-       <h3 style={{ fontSize: '1.8rem', color: 'var(--primary)', marginBottom: '16px' }}>Memory Match</h3>
+       <h3 style={{ fontSize: '1.8rem', color: 'var(--primary)', marginBottom: '16px' }}>{t('Memory Match')}</h3>
        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', maxWidth: '500px', margin: '0 auto' }}>
          {cards.map((card, i) => (
            <div 
@@ -92,18 +95,19 @@ function MemoryGame() {
            </div>
          ))}
        </div>
-       <p style={{ marginTop: '24px', fontSize: '1.4rem' }}>Moves: <strong>{moves}</strong></p>
+       <p style={{ marginTop: '24px', fontSize: '1.4rem' }}>{t('Moves:')} <strong>{moves}</strong></p>
        {won && (
          <div className="alert-card safe" style={{ marginTop: '24px', justifyContent: 'center' }}>
-           Great job! You found all matches in {moves} moves.
+           {t('Great job! You found all matches in ')}{moves}{t(' moves.')}
          </div>
        )}
-       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={initGame} className="btn btn-outline" style={{ marginTop: '24px', width: 'auto' }}><RotateCcw /> Restart Game</motion.button>
+       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={initGame} className="btn btn-outline" style={{ marginTop: '24px', width: 'auto' }}><RotateCcw /> {t('Restart Game')}</motion.button>
     </div>
   );
 }
 
 function SequenceGame() {
+  const { t } = useLanguage();
   const [sequence, setSequence] = useState('');
   const [level, setLevel] = useState(3); // Start with 3 digits
   const [phase, setPhase] = useState('start'); // start, show, input, result
@@ -141,11 +145,11 @@ function SequenceGame() {
 
   return (
     <div style={{ textAlign: 'center', padding: '40px 0' }}>
-       <h3 style={{ fontSize: '1.8rem', color: 'var(--primary)', marginBottom: '8px' }}>Number Recall</h3>
-       <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '40px' }}>Level {level - 2}</p>
+       <h3 style={{ fontSize: '1.8rem', color: 'var(--primary)', marginBottom: '8px' }}>{t('Number Recall')}</h3>
+       <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '40px' }}>{t('Level ')}{level - 2}</p>
 
        {phase === 'start' && (
-         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="btn btn-success" onClick={handleStart} style={{ maxWidth: '300px' }}><Play size={28} /> Start Game</motion.button>
+         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="btn btn-success" onClick={handleStart} style={{ maxWidth: '300px' }}><Play size={28} /> {t('Start Game')}</motion.button>
        )}
 
        {phase === 'show' && (
@@ -164,19 +168,19 @@ function SequenceGame() {
              onChange={e => setInputVal(e.target.value)}
              autoFocus
            />
-           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="submit" className="btn btn-primary" style={{ marginTop: '24px' }}>Submit</motion.button>
+           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="submit" className="btn btn-primary" style={{ marginTop: '24px' }}>{t('Submit')}</motion.button>
          </form>
        )}
 
        {phase === 'result' && (
          <div style={{ maxWidth: '400px', margin: '0 auto' }}>
             {inputVal === sequence ? (
-               <div className="alert-card safe" style={{ justifyContent: 'center' }}>Correct! Excellent memory.</div>
+               <div className="alert-card safe" style={{ justifyContent: 'center' }}>{t('Correct! Excellent memory.')}</div>
             ) : (
-               <div className="alert-card danger" style={{ justifyContent: 'center' }}>Not quite! The number was {sequence}.</div>
+               <div className="alert-card danger" style={{ justifyContent: 'center' }}>{t('Not quite! The number was ')}{sequence}.</div>
             )}
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="btn" onClick={handleNext} style={{ marginTop: '24px' }}>
-               {inputVal === sequence ? 'Next Level →' : 'Try Again'}
+               {inputVal === sequence ? t('Next Level →') : t('Try Again')}
             </motion.button>
          </div>
        )}

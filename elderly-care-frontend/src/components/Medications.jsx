@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Pill, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from '../context/LanguageContext';
 
 function Medications() {
+  const { t } = useLanguage();
   const [meds, setMeds] = useState([]);
   const [newMedName, setNewMedName] = useState("");
   const [newMedTime, setNewMedTime] = useState("");
@@ -94,7 +96,7 @@ function Medications() {
             style={{ marginBottom: "16px" }}
           />
           <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>
-            Loading your medications...
+            {t("Loading your medications...")}
           </p>
         </div>
       </motion.div>
@@ -108,7 +110,7 @@ function Medications() {
       exit={{ opacity: 0, y: -20 }}
     >
       <h2 className="card-title" style={{ paddingLeft: "8px" }}>
-        Today's Schedule
+        {t("Today's Schedule")}
       </h2>
 
       <div style={{ marginBottom: "40px" }}>
@@ -123,7 +125,7 @@ function Medications() {
               style={{ marginBottom: "16px" }}
             />
             <p style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>
-              No medications tracked yet.
+              {t("No medications tracked yet.")}
             </p>
           </div>
         )}
@@ -176,7 +178,7 @@ function Medications() {
                       fontSize: "1.2rem",
                     }}
                   >
-                    <CheckCircle2 size={28} /> Taken
+                    <CheckCircle2 size={28} /> {t("Taken")}
                   </div>
                 </div>
               ) : med.missedToday ? (
@@ -198,7 +200,7 @@ function Medications() {
                       fontSize: "1.2rem",
                     }}
                   >
-                    <XCircle size={28} /> Missed
+                    <XCircle size={28} /> {t("Missed")}
                   </div>
                 </div>
               ) : (
@@ -217,7 +219,7 @@ function Medications() {
                     }}
                     disabled={actionLoading[med.id]}
                   >
-                    {actionLoading[med.id] ? "..." : "Mark Taken"}
+                    {actionLoading[med.id] ? t("...") : t("Mark Taken")}
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -236,7 +238,7 @@ function Medications() {
                     disabled={actionLoading[med.id]}
                   >
                     <XCircle size={20} />{" "}
-                    {actionLoading[med.id] ? "..." : "Miss"}
+                    {actionLoading[med.id] ? t("...") : t("Miss")}
                   </motion.button>
                 </div>
               )}
@@ -247,12 +249,12 @@ function Medications() {
 
       <div className="card">
         <h3 style={{ marginBottom: "20px", fontSize: "1.4rem" }}>
-          + Add New Medicine
+          {t("+ Add New Medicine")}
         </h3>
         <form onSubmit={addMed}>
           <input
             type="text"
-            placeholder="Medicine Name (e.g. Aspirin)"
+            placeholder={t("Medicine Name (e.g. Aspirin)")}
             className="form-control"
             value={newMedName}
             onChange={(e) => setNewMedName(e.target.value)}
@@ -275,7 +277,7 @@ function Medications() {
               style={{ flex: 1 }}
               disabled={actionLoading.add}
             >
-              {actionLoading.add ? "Saving..." : "Save"}
+              {actionLoading.add ? t("Saving...") : t("Save")}
             </motion.button>
           </div>
         </form>

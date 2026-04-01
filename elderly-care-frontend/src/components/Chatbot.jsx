@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bot, User, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 
 function Chatbot() {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState([
-    { sender: 'bot', text: 'Hello! I am your Care Companion. How are you feeling today? 🌼' }
+    { sender: 'bot', text: t('Hello! I am your Care Companion. How are you feeling today? 🌼') }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -40,7 +42,7 @@ function Chatbot() {
     } catch (err) {
       console.error(err);
       setIsTyping(false);
-      setMessages(prev => [...prev, { sender: 'bot', text: 'Sorry, I am having trouble connecting right now.' }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: t('Sorry, I am having trouble connecting right now.') }]);
     }
   };
 
@@ -82,7 +84,7 @@ function Chatbot() {
       <form onSubmit={sendMessage} className="chat-input-area">
         <input 
           type="text" 
-          placeholder="Type message..." 
+          placeholder={t("Type message...")} 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           disabled={isTyping}
